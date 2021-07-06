@@ -30,7 +30,7 @@ func TestNormal(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := cx.Do(ctx, req)
+	resp, err := Submit(ctx, cx, req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %T", err)
 	log.Printf("resp is %#v", resp)
@@ -59,7 +59,7 @@ func TestConnectRefused(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := cx.Do(ctx, req)
+	resp, err := Submit(ctx, cx, req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %T", err)
 	log.Printf("resp is %#v", resp)
@@ -97,7 +97,7 @@ func TestConnectionClosed(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := cx.Do(ctx, req)
+	resp, err := Submit(ctx, cx, req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
 	log.Printf("err is %T", err)
@@ -136,7 +136,7 @@ func TestRequestTimeout(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := cx.Do(ctx, req)
+	resp, err := Submit(ctx, cx, req)
 
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)

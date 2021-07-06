@@ -68,7 +68,7 @@ func CreateTest(baseURL string, client *http.Client) *Connection {
 	return &cnx
 }
 
-func (cnx Connection) Do(ctx context.Context, req Request) (*Response, error) {
+func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error) {
 
 	// set up the url with query params if needed
 
