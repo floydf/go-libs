@@ -80,6 +80,8 @@ func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error
 		urlString = cnx.baseURL + req.Path
 	} 
 
+	log.Printf("urlString=%v", urlString)
+
 	urlp, err := url.Parse(urlString)
 	if err != nil {
 		return nil, fmt.Errorf("%s (1): %s", cnx.baseURL, err)
@@ -96,7 +98,6 @@ func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error
 	reqBody := strings.NewReader(req.ReqBody)
 
 	hreq, err := http.NewRequest(req.Method, urlp.String(), reqBody)
-	//hreq = hreq.WithContext(httptrace.WithClientTrace(hreq.Context(), trace))
 
 	if err != nil {
 		return nil, fmt.Errorf("%s (2): %s", cnx.baseURL, err)
@@ -121,9 +122,6 @@ func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error
 				log.Printf("nerr %#v", nerr)
 			}
 		}
-
-		//serr := nerr.Err.(*os.SyscallError)
-		//log.Printf("serr %#v, %q", serr, serr.Error())
 
 		return nil, fmt.Errorf("%s (3): %s", cnx.baseURL, err)
 	}
