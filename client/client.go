@@ -68,7 +68,35 @@ func CreateTest(baseURL string, client *http.Client) *Connection {
 	return &cnx
 }
 
+var defaultConnection *Connection
+
+func CreateDefault(baseURL string) {
+	defaultConnection = Create(baseURL)
+}
+
 func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error) {
+	return _submit(ctx, cnx, req)
+}
+
+func (cnx *Connection) Submit (ctx context.Context, req Request) (*Response, error) {
+	return _submit(ctx, cnx, req)
+}
+
+
+func Do(req Request) (*Response, error) {
+
+	if defaultConnection == nil {
+		log.Fatalf("DefaultConnection has not been set")
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	defer cancel()
+
+	return _submit(ctx, defaultConnection, req)
+}
+
+func _submit(ctx context.Context, cnx *Connection, req Request) (*Response, error) {
 
 	// set up the url with query params if needed
 
