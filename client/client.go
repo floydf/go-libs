@@ -74,6 +74,10 @@ func CreateDefault(baseURL string) {
 	defaultConnection = Create(baseURL)
 }
 
+func Default() *Connection {
+	return defaultConnection
+}
+
 func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error) {
 	return _submit(ctx, cnx, req)
 }
