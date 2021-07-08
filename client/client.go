@@ -32,7 +32,7 @@ type Request struct {
 }
 
 type Connection struct {
-	baseURL string
+	BaseURL string
 	client  *http.Client
 }
 
@@ -44,7 +44,7 @@ func CloseIdleConnections() {
 
 func Create(baseURL string) *Connection {
 	cnx := Connection{}
-	cnx.baseURL = baseURL
+	cnx.BaseURL = baseURL
 
 	defaultTransportPointer := &http.Transport{Proxy: http.ProxyFromEnvironment}
 	transport := *defaultTransportPointer // copy it
@@ -62,7 +62,7 @@ func Create(baseURL string) *Connection {
 // creates a connection for the test
 func CreateTest(baseURL string, client *http.Client) *Connection {
 	cnx := Connection{}
-	cnx.baseURL = baseURL
+	cnx.BaseURL = baseURL
 	cnx.client = client
 
 	return &cnx
@@ -74,17 +74,20 @@ func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error
 
 	urlString := req.Path
 
+	log.Printf("req.BaseURL=%v", req.BaseURL)
+	log.Printf("cnx.baseURL=%v", cnx.BaseURL)
+
 	if len(req.BaseURL) > 0 {
 		urlString = req.BaseURL + req.Path
-	} else if len(cnx.baseURL) > 0 {
-		urlString = cnx.baseURL + req.Path
+	} else if len(cnx.BaseURL) > 0 {
+		urlString = cnx.BaseURL + req.Path
 	} 
 
 	log.Printf("urlString=%v", urlString)
 
 	urlp, err := url.Parse(urlString)
 	if err != nil {
-		return nil, fmt.Errorf("%s (1): %s", cnx.baseURL, err)
+		return nil, fmt.Errorf("%s (1): %s", cnx.BaseURL, err)
 	}
 
 	if req.QueryParams != nil {
@@ -100,7 +103,7 @@ func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error
 	hreq, err := http.NewRequest(req.Method, urlp.String(), reqBody)
 
 	if err != nil {
-		return nil, fmt.Errorf("%s (2): %s", cnx.baseURL, err)
+		return nil, fmt.Errorf("%s (2): %s", cnx.BaseURL, err)
 	}
 
 	// add the headers
@@ -123,7 +126,7 @@ func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error
 			}
 		}
 
-		return nil, fmt.Errorf("%s (3): %s", cnx.baseURL, err)
+		return nil, fmt.Errorf("%s (3): %s", cnx.BaseURL, err)
 	}
 
 	defer resp.Body.Close()
@@ -131,7 +134,7 @@ func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error
 	// pull body out
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("%s (4): %s", cnx.baseURL, err)
+		return nil, fmt.Errorf("%s (4): %s", cnx.BaseURL, err)
 	}
 
 	// return statusCode, returned body, and returned cookies
