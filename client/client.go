@@ -59,15 +59,6 @@ func Create(baseURL string) *Connection {
 	return &cnx
 }
 
-// creates a connection for the test
-func CreateTest(baseURL string, client *http.Client) *Connection {
-	cnx := Connection{}
-	cnx.BaseURL = baseURL
-	cnx.client = client
-
-	return &cnx
-}
-
 var defaultConnection *Connection
 
 func CreateDefault(baseURL string) {
@@ -78,26 +69,50 @@ func Default() *Connection {
 	return defaultConnection
 }
 
-func Submit(ctx context.Context, cnx *Connection, req Request) (*Response, error) {
-	return _submit(ctx, cnx, req)
+// creates a connection for the test
+func CreateTest(baseURL string, client *http.Client) *Connection {
+	cnx := Connection{}
+	cnx.BaseURL = baseURL
+	cnx.client = client
+
+	defaultConnection = &cnx
+
+	return &cnx
 }
 
-func (cnx *Connection) Submit (ctx context.Context, req Request) (*Response, error) {
-	return _submit(ctx, cnx, req)
-}
+// The Submit form does not take a context, and is called from apiseq
 
-
-func Do(req Request) (*Response, error) {
-
-	if defaultConnection == nil {
-		log.Fatalf("DefaultConnection has not been set")
-	}
+func Submit(cnx *Connection, req Request) (*Response, error) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()
 
+	return _submit(ctx, cnx, req)
+}
+
+func (cnx *Connection) Submit (req Request) (*Response, error) {
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	defer cancel()
+
+	return _submit(ctx, cnx, req)
+}
+
+// The Do version takes a context, and is called from Fornax-Test
+
+func Do(ctx context.Context, req Request) (*Response, error) {
+
+	if defaultConnection == nil {
+		log.Fatalf("DefaultConnection has not been set")
+	}
+
 	return _submit(ctx, defaultConnection, req)
+}
+
+func (cnx *Connection) Do (ctx context.Context, req Request) (*Response, error) {
+	return _submit(ctx, cnx, req)
 }
 
 func _submit(ctx context.Context, cnx *Connection, req Request) (*Response, error) {

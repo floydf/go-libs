@@ -23,14 +23,14 @@ func TestNormal(t *testing.T) {
 
 	log.Printf("server.URL is %s", server.URL)
 
-	cx := CreateTest(server.URL, server.Client())
+	CreateTest(server.URL, server.Client())
 
 	req := Request{}
 
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := Submit(ctx, cx, req)
+	resp, err := Do(ctx, req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %T", err)
 	log.Printf("resp is %#v", resp)
@@ -52,14 +52,14 @@ func TestConnectRefused(t *testing.T) {
 
 	log.Printf("server.URL is %s", server.URL)
 
-	cx := CreateTest(server.URL, server.Client())
+	CreateTest(server.URL, server.Client())
 
 	req := Request{}
 
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := Submit(ctx, cx, req)
+	resp, err := Do(ctx, req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %T", err)
 	log.Printf("resp is %#v", resp)
@@ -90,14 +90,14 @@ func TestConnectionClosed(t *testing.T) {
 
 	log.Printf("server.URL is %s", server.URL)
 
-	cx := CreateTest(server.URL, server.Client())
+	CreateTest(server.URL, server.Client())
 
 	req := Request{}
 
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := Submit(ctx, cx, req)
+	resp, err := Do(ctx, req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
 	log.Printf("err is %T", err)
@@ -128,7 +128,6 @@ func TestRequestTimeout(t *testing.T) {
 	ts.Config.WriteTimeout = timeout
 	ts.Start()
 
-	//cx := CreateTest(ts.URL, ts.Client())
 	cx := Create(ts.URL)
 
 	req := Request{}
@@ -136,7 +135,7 @@ func TestRequestTimeout(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := Submit(ctx, cx, req)
+	resp, err := cx.Do(ctx, req)
 
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
