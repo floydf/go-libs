@@ -82,13 +82,17 @@ func CreateTest(baseURL string, client *http.Client) *Connection {
 
 // The Submit form does not take a context, and is called from apiseq
 
-func Submit(cnx *Connection, req Request) (*Response, error) {
+func Submit(req Request) (*Response, error) {
+
+	if defaultConnection == nil {
+		log.Fatalf("DefaultConnection has not been set")
+	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()
-
-	return _submit(ctx, cnx, req)
+	
+	return _submit(ctx, defaultConnection, req)
 }
 
 func (cnx *Connection) Submit (req Request) (*Response, error) {
