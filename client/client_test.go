@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"log"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -152,15 +153,37 @@ func TestProxy(t *testing.T) {
 
 	req := Request{}
 
-	req.Method = "GET"
-	req.Path = "/xyzzy"
+	req.Method = "POST"
 
 	cx := Create("https://api-devintever3.mountain.siriusxm.com")
+
+	b, err := ioutil.ReadFile("testdata/auth.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	req.ReqBody = string(b)
+	req.Path = "/rest/v2/experience/modules/modify/authentication"
 
 	resp, err := cx.Do(ctx, req)
 	
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
 	log.Printf("err is %T", err)
-	log.Printf("resp is %#v", resp)
+	log.Printf("resp is %#v", string(resp.Body))
+
+	b, err = ioutil.ReadFile("testdata/resume.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	req.ReqBody = string(b)
+	req.Path = "/rest/v2/experience/modules/resume"
+
+	resp, err = cx.Do(ctx, req)
+	
+	log.Printf("err is %#v", err)
+	log.Printf("err is %q", err)
+	log.Printf("err is %T", err)
+	log.Printf("resp is %#v", string(resp.Body))
 }
