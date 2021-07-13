@@ -52,6 +52,8 @@ func Create(baseURL string) *Connection {
 	transport.MaxIdleConnsPerHost = 4000
 	transport.MaxConnsPerHost = 4000
 
+	log.Printf("transport=%#v", transport)
+
 	client := http.Client{Transport: &transport}
 	client.Jar, _ = cookiejar.New(nil)
 	cnx.client = &client
@@ -74,6 +76,8 @@ func CreateTest(baseURL string, client *http.Client) *Connection {
 	cnx := Connection{}
 	cnx.BaseURL = baseURL
 	cnx.client = client
+
+	client.Jar, _ = cookiejar.New(nil)
 
 	defaultConnection = &cnx
 
@@ -164,6 +168,11 @@ func _submit(ctx context.Context, cnx *Connection, req Request) (*Response, erro
 		}
 	}
 
+	// add the cookies
+	for _, c := range cnx.client.Jar.Cookies(urlp) {
+		hreq.AddCookie(c)
+	}
+
 	// submit it
 	resp, err := cnx.client.Do(hreq)
 	if err != nil {
@@ -181,6 +190,9 @@ func _submit(ctx context.Context, cnx *Connection, req Request) (*Response, erro
 	}
 
 	defer resp.Body.Close()
+
+	// save off returned cookies
+	cnx.client.Jar.SetCookies(urlp, resp.Cookies())
 
 	// pull body out
 	b, err := ioutil.ReadAll(resp.Body)

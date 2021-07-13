@@ -142,3 +142,25 @@ func TestRequestTimeout(t *testing.T) {
 	log.Printf("err is %T", err)
 	log.Printf("resp is %#v", resp)
 }
+
+func TestProxy(t *testing.T) {
+	log.Printf("Running test proxy")
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	defer cancel()
+
+	req := Request{}
+
+	req.Method = "GET"
+	req.Path = "/xyzzy"
+
+	cx := Create("https://api-devintever3.mountain.siriusxm.com")
+
+	resp, err := cx.Do(ctx, req)
+	
+	log.Printf("err is %#v", err)
+	log.Printf("err is %q", err)
+	log.Printf("err is %T", err)
+	log.Printf("resp is %#v", resp)
+}
