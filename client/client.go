@@ -52,8 +52,6 @@ func Create(baseURL string) *Connection {
 	transport.MaxIdleConnsPerHost = 4000
 	transport.MaxConnsPerHost = 4000
 
-	log.Printf("transport=%#v", transport)
-
 	client := http.Client{Transport: &transport}
 	client.Jar, _ = cookiejar.New(nil)
 	cnx.client = &client
@@ -63,7 +61,7 @@ func Create(baseURL string) *Connection {
 
 var defaultConnection *Connection
 
-func CreateDefault(baseURL string) {
+func CreateDefault(baseURL string) *{
 	defaultConnection = Create(baseURL)
 }
 
