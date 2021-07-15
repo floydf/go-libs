@@ -31,7 +31,7 @@ func TestNormal(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := Do(ctx, req)
+	resp, err := Do(ctx, &req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %T", err)
 	log.Printf("resp is %#v", resp)
@@ -60,7 +60,7 @@ func TestConnectRefused(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := Do(ctx, req)
+	resp, err := Do(ctx, &req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %T", err)
 	log.Printf("resp is %#v", resp)
@@ -98,7 +98,7 @@ func TestConnectionClosed(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := Do(ctx, req)
+	resp, err := Do(ctx, &req)
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
 	log.Printf("err is %T", err)
@@ -136,7 +136,7 @@ func TestRequestTimeout(t *testing.T) {
 	req.Method = "GET"
 	req.Path = "/xyzzy"
 
-	resp, err := cx.Do(ctx, req)
+	resp, err := cx.Do(ctx, &req)
 
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
@@ -165,7 +165,7 @@ func TestProxy(t *testing.T) {
 	req.ReqBody = string(b)
 	req.Path = "/rest/v2/experience/modules/modify/authentication"
 
-	resp, err := cx.Do(ctx, req)
+	resp, err := cx.Do(ctx, &req)
 	
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
@@ -180,7 +180,7 @@ func TestProxy(t *testing.T) {
 	req.ReqBody = string(b)
 	req.Path = "/rest/v2/experience/modules/resume"
 
-	resp, err = cx.Do(ctx, req)
+	resp, err = cx.Do(ctx, &req)
 	
 	log.Printf("err is %#v", err)
 	log.Printf("err is %q", err)
