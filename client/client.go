@@ -61,7 +61,7 @@ func Create(baseURL string) *Connection {
 
 var defaultConnection *Connection
 
-func CreateDefault(baseURL string) *{
+func CreateDefault(baseURL string) {
 	defaultConnection = Create(baseURL)
 }
 
